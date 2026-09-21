@@ -3,6 +3,8 @@ import CategoryBadge from "@/components/catalog/CategoryBadge";
 import HeroBanner from "@/components/home/HeroBanner";
 import { getCategories, getProducts } from "@/lib/catalog";
 
+export const revalidate = 60;
+
 export default async function HomePage() {
   const [products, categories] = await Promise.all([
     getProducts(),
