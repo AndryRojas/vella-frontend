@@ -44,3 +44,5 @@ next-env.d.ts
 application-local.yml
 application-prod.yml
 *.env
+.vercel
+.env*
