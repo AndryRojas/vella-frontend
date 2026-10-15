@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import api from "@/lib/api";
 import { Product } from "@/types";
-import { formatCOP } from "@/lib/utils";
+import { downloadCsv, formatCOP } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import {
   Table,
@@ -52,6 +52,24 @@ export default function AdminProductosPage() {
     load();
   };
 
+  const handleExportCsv = () => {
+    const activeProducts = products.filter((product) => product.active);
+    downloadCsv(
+      `productos-activos-${process.env.NEXT_PUBLIC_STORE_SLUG}.csv`,
+      ["ID", "Nombre", "Slug", "Descripción", "Categoría", "Precio", "Stock", "URL imagen principal"],
+      activeProducts.map((product) => [
+        product.id,
+        product.name,
+        product.slug,
+        product.description,
+        product.categoryName,
+        product.price,
+        product.stock,
+        product.primaryImageUrl,
+      ])
+    );
+  };
+
   const totalPages = Math.max(1, Math.ceil(products.length / PAGE_SIZE));
   const pageItems = products.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
@@ -59,14 +77,26 @@ export default function AdminProductosPage() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl">Productos</h1>
-        <Link
-          href="/admin/productos/nuevo"
-          className={buttonVariants({
-            className: "bg-vella-wine text-white hover:bg-vella-wine-light",
-          })}
-        >
-          Nuevo producto
-        </Link>
+        <div className="flex gap-3">
+          <button
+            onClick={handleExportCsv}
+            disabled={loading || products.every((product) => !product.active)}
+            className={buttonVariants({
+              variant: "outline",
+              className: "border-vella-wine text-vella-wine hover:bg-vella-wine/10 disabled:opacity-40",
+            })}
+          >
+            Exportar CSV
+          </button>
+          <Link
+            href="/admin/productos/nuevo"
+            className={buttonVariants({
+              className: "bg-vella-wine text-white hover:bg-vella-wine-light",
+            })}
+          >
+            Nuevo producto
+          </Link>
+        </div>
       </div>
 
       <div className="rounded-lg border border-vella-gold/20 bg-white">

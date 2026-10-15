@@ -18,3 +18,23 @@ export function formatCOP(price: number): string {
   }).format(price)
 }
 
+function csvEscape(value: string | number | null | undefined): string {
+  const text = value === null || value === undefined ? "" : String(value)
+  if (/[",\n]/.test(text)) {
+    return `"${text.replace(/"/g, '""')}"`
+  }
+  return text
+}
+
+export function downloadCsv(filename: string, headers: string[], rows: (string | number | null | undefined)[][]): void {
+  const lines = [headers, ...rows].map((row) => row.map(csvEscape).join(","))
+  const csvContent = "﻿" + lines.join("\r\n")
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement("a")
+  link.href = url
+  link.download = filename
+  link.click()
+  URL.revokeObjectURL(url)
+}
+
