@@ -10,6 +10,14 @@ export function slugify(text: string): string {
     .replace(/^-+|-+$/g, "")
 }
 
+export function normalizeForSearch(text: string): string {
+  return text
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .trim()
+}
+
 export function formatCOP(price: number): string {
   return new Intl.NumberFormat("es-CO", {
     style: "currency",

@@ -5,8 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 import api from "@/lib/api";
 import { Product } from "@/types";
-import { downloadCsv, formatCOP } from "@/lib/utils";
+import { downloadCsv, formatCOP, normalizeForSearch } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -22,6 +23,7 @@ export default function AdminProductosPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
 
   const fetchProducts = () => {
     return api
@@ -70,8 +72,17 @@ export default function AdminProductosPage() {
     );
   };
 
-  const totalPages = Math.max(1, Math.ceil(products.length / PAGE_SIZE));
-  const pageItems = products.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const filteredProducts = products.filter((product) =>
+    normalizeForSearch(product.name).includes(normalizeForSearch(search))
+  );
+
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE));
+  const pageItems = filteredProducts.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  const handleSearchChange = (value: string) => {
+    setSearch(value);
+    setPage(1);
+  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -99,6 +110,14 @@ export default function AdminProductosPage() {
         </div>
       </div>
 
+      <Input
+        type="text"
+        value={search}
+        onChange={(e) => handleSearchChange(e.target.value)}
+        placeholder="Buscar producto por nombre..."
+        className="max-w-sm"
+      />
+
       <div className="rounded-lg border border-vella-gold/20 bg-white">
         <Table>
           <TableHeader>
@@ -116,7 +135,7 @@ export default function AdminProductosPage() {
             {!loading && pageItems.length === 0 && (
               <TableRow>
                 <TableCell colSpan={7} className="py-8 text-center text-vella-navy/60">
-                  No hay productos todavía.
+                  {search ? "No hay productos que coincidan con la búsqueda." : "No hay productos todavía."}
                 </TableCell>
               </TableRow>
             )}
