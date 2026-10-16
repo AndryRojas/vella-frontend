@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import icon from "../../../public/images/icon-vellatech.jpg";
+import CustomerNavLinks from "./CustomerNavLinks";
 
 export default function Navbar() {
   return (
@@ -19,12 +20,15 @@ export default function Navbar() {
             Inicio
           </Link>
         </nav>
-        <Link
-          href="/contacto"
-          className="rounded-full border border-vella-wine px-5 py-2 text-sm font-medium text-vella-wine transition-colors hover:bg-vella-wine hover:text-white"
-        >
-          Contáctanos
-        </Link>
+        <div className="flex items-center gap-4 text-sm font-medium text-vella-navy">
+          <CustomerNavLinks />
+          <Link
+            href="/contacto"
+            className="rounded-full border border-vella-wine px-5 py-2 text-sm font-medium text-vella-wine transition-colors hover:bg-vella-wine hover:text-white"
+          >
+            Contáctanos
+          </Link>
+        </div>
       </div>
     </header>
   );

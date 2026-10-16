@@ -58,3 +58,41 @@ export interface LoginRequest {
   username: string
   password: string
 }
+
+export interface Customer {
+  id: number
+  email: string
+  fullName: string
+  phone: string | null
+  storeSlug: string
+}
+
+export interface CustomerRegisterRequest {
+  storeSlug: string
+  email: string
+  password: string
+  fullName: string
+  phone?: string
+}
+
+export interface CustomerLoginRequest {
+  storeSlug: string
+  email: string
+  password: string
+}
+
+export interface CustomerAuthResponse {
+  token: string
+  customer: Customer
+}
+
+export interface VerifyEmailRequest {
+  storeSlug: string
+  email: string
+  code: string
+}
+
+export interface ResendCodeRequest {
+  storeSlug: string
+  email: string
+}
